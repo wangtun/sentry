@@ -1,7 +1,7 @@
 import iOSDeviceList from 'ios-device-list';
 import {isString} from 'lodash';
 
-export default function(model) {
+export default function deviceNameMapper(model) {
   if (!model || !isString(model)) {
     return null;
   }

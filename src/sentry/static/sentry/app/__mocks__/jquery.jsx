@@ -9,4 +9,6 @@ let jq = {
   addClass: () => jq,
 };
 
-export default () => jq;
+const jqMock = () => jq;
+
+export default jqMock;

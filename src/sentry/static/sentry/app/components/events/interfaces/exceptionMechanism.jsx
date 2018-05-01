@@ -7,7 +7,6 @@ import Pill from 'app/components/pill';
 class ExceptionMechanism extends React.Component {
   static propTypes = {
     data: PropTypes.object.isRequired,
-    platform: PropTypes.string,
   };
 
   render() {
