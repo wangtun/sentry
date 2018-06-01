@@ -127,6 +127,7 @@ class GitHubIntegrationProvider(IntegrationProvider):
 
         return {
             'name': installation['account']['login'],
+            # TODO(adhiraj): This should be a constant representing the entire github cloud.
             'external_id': installation['id'],
             'metadata': {
                 # The access token will be populated upon API usage
