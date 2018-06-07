@@ -6,7 +6,9 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from sentry.web.helpers import render_to_response
 from sentry.integrations import Integration, IntegrationProvider, IntegrationMetadata
+from sentry.integrations.vsts.issues import VstsIssueSync
 from .client import VstsApiClient
+
 from sentry.pipeline import NestedPipelineView, PipelineView
 from sentry.identity.pipeline import IdentityProviderPipeline
 from sentry.identity.vsts import VSTSIdentityProvider
@@ -67,7 +69,7 @@ class ProjectForm(forms.Form):
         )
 
 
-class VstsIntegration(Integration):
+class VstsIntegration(Integration, VstsIssueSync):
     def __init__(self, *args, **kwargs):
         super(VstsIntegration, self).__init__(*args, **kwargs)
         self.default_identity = None
@@ -80,6 +82,14 @@ class VstsIntegration(Integration):
         if access_token is None:
             raise ValueError('Identity missing access token')
         return VstsApiClient(access_token)
+
+    @property
+    def instance(self):
+        return self.model.metadata['domain_name']
+
+    @property
+    def default_project(self):
+        return self.model.metadata['default_project']['name']
 
 
 class VstsIntegrationProvider(IntegrationProvider):
@@ -121,13 +131,18 @@ class VstsIntegrationProvider(IntegrationProvider):
 
         scopes = sorted(VSTSIdentityProvider.oauth_scopes)
         return {
-            'name': project['name'],
-            'external_id': project['id'],
+            'name': account['AccountName'],
+            'external_id': account['AccountId'],
             'metadata': {
                 'domain_name': instance,
                 'scopes': scopes,
+                'default_project': {
+                    'name': project['name'],
+                    'id': project['id'],
+                }
                 # icon doesn't appear to be possible
             },
+            # TODO(LB): Change this to a Microsoft account as opposed to a VSTS workspace
             'user_identity': {
                 'type': 'vsts',
                 'external_id': account['AccountId'],
