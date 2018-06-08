@@ -134,7 +134,7 @@ class VstsIntegrationProvider(IntegrationProvider):
             'name': account['AccountName'],
             'external_id': account['AccountId'],
             'metadata': {
-                'domain_name': instance,
+                'domain_name': instance,  # This has become redundant
                 'scopes': scopes,
                 'default_project': {
                     'name': project['name'],
