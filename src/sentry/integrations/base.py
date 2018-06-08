@@ -188,7 +188,7 @@ class Integration(object):
         For Integrations that rely solely on user auth for authentication
         """
         if self.organization_id is None:
-            raise NotImplementedError
+            raise NotImplementedError('%s requires an organization_id' % self.name)
 
         org_integration = OrganizationIntegration.objects.get(
             organization_id=self.organization_id,

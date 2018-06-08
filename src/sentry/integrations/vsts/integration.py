@@ -86,7 +86,7 @@ class VstsIntegration(Integration):
             {
                 'name': 'default_project',
                 'label': 'Default Project Name',
-                'type': 'text',
+                'type': 'string',
                 'placeholder': 'MyProject',
                 'required': True,
                 'help': (
