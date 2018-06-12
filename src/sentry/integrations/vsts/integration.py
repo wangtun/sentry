@@ -5,7 +5,7 @@ from django import forms
 
 from django.utils.translation import ugettext_lazy as _
 from sentry.web.helpers import render_to_response
-from sentry.integrations import Integration, IntegrationProvider, IntegrationMetadata
+from sentry.integrations import Integration, IntegrationFeatures, IntegrationProvider, IntegrationMetadata
 from sentry.integrations.vsts.issues import VstsIssueSync
 from .client import VstsApiClient
 
@@ -89,7 +89,10 @@ class VstsIntegration(Integration, VstsIssueSync):
 
     @property
     def default_project(self):
-        return self.model.metadata['default_project']['name']
+        try:
+            return self.model.metadata['default_project']['name']
+        except KeyError:
+            return None
 
 
 class VstsIntegrationProvider(IntegrationProvider):
@@ -100,6 +103,7 @@ class VstsIntegrationProvider(IntegrationProvider):
     api_version = '4.1'
     needs_default_identity = True
     integration_cls = VstsIntegration
+    features = frozenset([IntegrationFeatures.ISSUE_SYNC])
 
     setup_dialog_config = {
         'width': 600,

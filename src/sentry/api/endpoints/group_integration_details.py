@@ -37,11 +37,14 @@ class GroupIntegrationDetailsEndpoint(GroupEndpoint):
                 {'detail': 'This feature is not supported for this integration.'}, status=400)
 
         # TODO(jess): add create issue config to serializer
+
+        kwargs = {'organization_id': organization_id}
         return Response(
             serialize(
                 integration,
                 request.user,
                 IntegrationIssueConfigSerializer(group, action, params=request.GET),
+                **kwargs
             )
         )
 
@@ -66,7 +69,7 @@ class GroupIntegrationDetailsEndpoint(GroupEndpoint):
             return Response(
                 {'detail': 'This feature is not supported for this integration.'}, status=400)
 
-        installation = integration.get_installation()
+        installation = integration.get_installation(organization_id)
         try:
             data = installation.get_issue(external_issue_id)
         except IntegrationError as exc:
@@ -118,7 +121,7 @@ class GroupIntegrationDetailsEndpoint(GroupEndpoint):
             return Response(
                 {'detail': 'This feature is not supported for this integration.'}, status=400)
 
-        installation = integration.get_installation()
+        installation = integration.get_installation(organization_id)
         try:
             data = installation.create_issue(request.DATA)
         except IntegrationError as exc:
