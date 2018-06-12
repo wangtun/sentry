@@ -160,10 +160,11 @@ class Integration(object):
 
     def __init__(self, model, organization_id=None):
         self.model = model
-        self.org_integration = OrganizationIntegration.objects.get(
-            organization_id=organization_id,
-            integration_id=model.id,
-        )
+        if organization_id is not None:
+            self.org_integration = OrganizationIntegration.objects.get(
+                organization_id=organization_id,
+                integration_id=model.id,
+            )
 
     def get_organization_config(self):
         """
