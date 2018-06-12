@@ -39,15 +39,6 @@ class ExternalIssueForm extends AsyncComponent {
     this.props.onSubmitSuccess();
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    // if this is the first config fetch, update dynamic fields too
-    if (prevState.integrationDetails === null) {
-      let dynamicFieldValues = this.getDynamicFields();
-      // eslint-disable-next-line
-      this.setState({dynamicFieldValues});
-    }
-  }
-
   getOptions = (field, input) => {
     if (!input) {
       return Promise.resolve([]);
@@ -72,6 +63,14 @@ class ExternalIssueForm extends AsyncComponent {
     });
   };
 
+  onRequestSuccess = ({stateKey, data, jqXHR}) => {
+    if (stateKey === 'integrationDetails' && !this.state.dynamicFieldValues) {
+      this.setState({
+        dynamicFieldValues: this.getDynamicFields(data),
+      });
+    }
+  };
+
   refetchConfig = () => {
     let {dynamicFieldValues} = this.state;
     let {action, group, integration} = this.props;
@@ -94,8 +93,8 @@ class ExternalIssueForm extends AsyncComponent {
     });
   };
 
-  getDynamicFields() {
-    let {integrationDetails} = this.state;
+  getDynamicFields(integrationDetails) {
+    integrationDetails = integrationDetails || this.state.integrationDetails;
     let {action} = this.props;
     let config = integrationDetails[`${action}IssueConfig`];
     let dynamicFields = {};
