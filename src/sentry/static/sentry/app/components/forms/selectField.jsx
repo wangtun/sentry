@@ -7,7 +7,7 @@ import SelectControl from 'app/components/forms/selectControl';
 export default class SelectField extends FormField {
   static propTypes = {
     ...FormField.propTypes,
-    options: PropTypes.array.isRequired,
+    options: PropTypes.array,
     onChange: PropTypes.func,
     clearable: PropTypes.bool,
   };
