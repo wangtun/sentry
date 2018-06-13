@@ -165,6 +165,8 @@ class Integration(object):
                 organization_id=organization_id,
                 integration_id=model.id,
             )
+        else:
+            self.org_integration = None
 
     def get_organization_config(self):
         """
